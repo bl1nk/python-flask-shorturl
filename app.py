@@ -48,6 +48,10 @@ def get_url(shorturl):
     url = db.execute('select url from entries where hash=(?)', (shorturl,))
     return redirect(url.fetchone()[0])
 
+@app.route('/favicon.ico/')
+def do_not_serve():
+    return ''
+
 # }}}
 # helper methods {{{
 
