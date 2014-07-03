@@ -1,7 +1,7 @@
 <!doctype html>
 <title>PURL</title>
-{% if url %}<div class=success><strong>Here you go:</strong> {{ url }}</div>{% endif %}
-<form action="{{ url_for('insert_url') }}" method=post>
+{% if url %}<div class=success>{{ url }}</div>{% endif %}
+<form action="{{ url_for('hi') }}" method=post>
 	<input type=text name=url>
 </form>
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
 import sqlite3
+import string
+import random
 from flask import Flask, request, g, render_template, redirect, url_for, flash
 app = Flask(__name__)
 
@@ -34,16 +36,32 @@ def close_db(error):
 # routes {{{
 
 @app.route('/', methods=['GET', 'POST'])
-def insert_url():
+def hi():
     url = None
     if (request.method == 'POST'):
-        url = create_url(request.form['url'])
+        url = insert_url(request.form['url'])
     return render_template('new.html', url=url)
 
-# }}}
+@app.route('/<shorturl>')
+def get_url(shorturl):
+    db = get_db()
+    url = db.execute('select url from entries where hash=(?)', (shorturl,))
+    return redirect(url.fetchone()[0])
 
-def create_url(url):
-    return url
+# }}}
+# helper methods {{{
+
+def insert_url(url):
+    shorturl = generate_hash()
+    db = get_db()
+    db.execute('insert into entries (hash,url) values (?,?)', [shorturl,url])
+    db.commit()
+    return request.url + shorturl
+
+def generate_hash(chars=string.letters):
+    return ''.join(random.choice(chars) for i in range(6))
+
+# }}}
 
 if __name__ == "__main__":
     app.run(debug=True)
