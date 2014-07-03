@@ -4,7 +4,6 @@ import sqlite3
 from flask import Flask, request, g, render_template, redirect, url_for, flash
 app = Flask(__name__)
 
-
 # db {{{
 
 db_file = os.path.join(app.root_path, 'purl.db')
@@ -34,18 +33,17 @@ def close_db(error):
 # }}}
 # routes {{{
 
-@app.route("/")
-def index():
-    return redirect(url_for('new_url'))
-
-@app.route("/new")
-def new_url():
-    return "ok"
-
-def create_url():
-    return "yep"
+@app.route('/', methods=['GET', 'POST'])
+def insert_url():
+    url = None
+    if (request.method == 'POST'):
+        url = create_url(request.form['url'])
+    return render_template('new.html', url=url)
 
 # }}}
+
+def create_url(url):
+    return url
 
 if __name__ == "__main__":
     app.run(debug=True)
