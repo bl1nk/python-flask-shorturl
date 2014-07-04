@@ -4,7 +4,7 @@ import sqlite3
 from string import letters, digits
 from random import choice
 from urlparse import urlsplit
-from flask import Flask, request, g, render_template, redirect, url_for, flash
+from flask import Flask, request, g, render_template, redirect, url_for, abort
 app = Flask(__name__)
 
 # db {{{
@@ -48,8 +48,11 @@ def hi():
 @app.route('/<shorturl>')
 def get_url(shorturl):
     db = get_db()
-    url = db.execute('select url from entries where hash=(?)', (shorturl,))
-    return redirect(url.fetchone()[0])
+    url = db.execute('select url from entries where hash=(?)',
+            (shorturl,)).fetchone()
+    if url is not None:
+        return redirect(url[0])
+    abort(404)
 
 @app.route('/favicon.ico/')
 def do_not_serve():
