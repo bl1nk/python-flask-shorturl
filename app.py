@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import os
 import sqlite3
-import string
-import random
+from string import letters, digits
+from random import choice
+from urlparse import urlsplit
 from flask import Flask, request, g, render_template, redirect, url_for, flash
 app = Flask(__name__)
 
@@ -38,8 +39,10 @@ def close_db(error):
 @app.route('/', methods=['GET', 'POST'])
 def hi():
     url = None
-    if (request.method == 'POST'):
-        url = insert_url(request.form['url'])
+    if request.method == 'POST':
+        to_parse = request.form['url']
+        if validate_url(to_parse):
+            url = insert_url(to_parse)
     return render_template('new.html', url=url)
 
 @app.route('/<shorturl>')
@@ -62,8 +65,12 @@ def insert_url(url):
     db.commit()
     return request.url + shorturl
 
-def generate_hash(chars=string.letters+string.digits):
-    return ''.join(random.choice(chars) for i in range(6))
+def generate_hash(chars=letters+digits):
+    return ''.join(choice(chars) for i in range(6))
+
+def validate_url(url):
+    o = urlsplit(url)
+    return o.scheme in ('http','https') and '.' in o.netloc
 
 # }}}
 
