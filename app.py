@@ -65,8 +65,8 @@ def insert_url(url):
     db.commit()
     return request.url + shorturl
 
-def generate_hash(chars=letters+digits):
-    return ''.join(choice(chars) for i in range(6))
+def generate_hash(chars=letters+digits, r=6):
+    return ''.join(choice(chars) for i in range(r))
 
 def validate_url(url):
     o = urlsplit(url)
