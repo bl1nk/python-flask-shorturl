@@ -62,7 +62,7 @@ def insert_url(url):
     db.commit()
     return request.url + shorturl
 
-def generate_hash(chars=string.letters):
+def generate_hash(chars=string.letters+string.digits):
     return ''.join(random.choice(chars) for i in range(6))
 
 # }}}
