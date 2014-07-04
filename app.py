@@ -40,9 +40,9 @@ def close_db(error):
 def hi():
     url = None
     if request.method == 'POST':
-        to_parse = request.form['url']
-        if validate_url(to_parse):
-            url = insert_url(to_parse)
+        value = request.form['url']
+        if validate_url(value):
+            url = insert_url(value)
     return render_template('new.html', url=url)
 
 @app.route('/<shorturl>')
